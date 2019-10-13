@@ -1,8 +1,8 @@
 # Open-Pi-Scape
 Customized version of RSC Single Player for the Raspberry Pi 3 and above
 
-You will want to have a bootable microSD card running a fresh install of CentOS 8 aarch64:
-http://isoredirect.centos.org/centos/8-stream/isos/aarch64/
+You will want to have a bootable microSD card running a fresh install of CentOS aarch64:
+http://isoredirect.centos.org/altarch/7/isos/armhfp/CentOS-Userland-7-armv7hl-RaspberryPI-GNOME-1908-sda.raw.xz
 
 You can write to your microSD card using various utilities. Here is a great open source tool for any platform:
 https://www.balena.io/etcher/
