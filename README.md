@@ -8,20 +8,55 @@ You can write to your microSD card using various utilities. Here is a great open
 https://www.balena.io/etcher/
 
 
+See this guide:
+https://wiki.centos.org/SpecialInterestGroup/AltArch/armhfp?action=show&redirect=SpecialInterestGroup%2FAltArch%2FArm32#head-0f62978700d6645d09caddc100a5d1aa2cbdac1f
+
+First, SSH into your Pi and use the default credentials:
+```
+ssh root@YOUR_PI's_IP_ADDRESS
+```
+
+password: centos
+
+
+You will need to expand the filesystem to use the entire microSD card:
+```
+/usr/bin/rootfs-expand
+```
+
+You next should turbo / overclock your Pi as it is generally pretty slow otherwise:
+https://haydenjames.io/raspberry-pi-3-overclock/
+```
+yum install -y nano
+nano /boot/config.txt
+```
+
+Paste the following:
+```
+core_freq=500 # GPU Frequency
+arm_freq=1350 # CPU Frequency
+over_voltage=4 #Electric power sent to CPU / GPU (4 = 1.3V)
+disable_splash=1 # Disables the display of the electric alert screen
+force_turbo=1
+sdram_freq=600
+boot_delay=1
+gpu_mem=320
+```
+
 Once installed, perform OS updates and install OpenJDK, MariaDB (SQL server), and various utilities via:
 ```
-sudo yum update -y && sudo yum install git wget htop mariadb adoptopenjdk-8-openj9 -y
+yum update -y && sudo yum install git wget htop mariadb adoptopenjdk-8-openj9 -y
 ```
 
 Now, enable MariaDB to start up:
 ```
-sudo systemctl enable --now mariadb
+systemctl enable --now mariadb
 ```
 
 
 If you wish, configure MariaDB:
 ```
-sudo mysql_secure_installation
+mysql_secure_installation
 ```
 
 
