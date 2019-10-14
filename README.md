@@ -1,5 +1,19 @@
 # Open-Pi-Scape
-Customized version of RSC Single Player for the Raspberry Pi 3 and above
+The Raspberry Pi 3B+ (and earlier editions) do not have enough memory to run the game client and the game server at the same time. Raspberry Pi 4 and above with 2GB or more RAM are capable of running both.
+
+This project is design for the Raspberry Pi 3B+ with 1GB of RAM to act as a home LAN game server for Android and PC game clients to connect to at home. Due to limited memory and processor speeds, it is not advisable to host a public server with a Raspberry Pi 3B+, nor have more than 2 or 3 online players at a time due to in-game slow downs.
+
+Example result on a Raspberry Pi 3B+ when running the "top" command on a CentOS 7 install only running the game server with a single logged in player:
+```
+Tasks: 172 total,   1 running, 122 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 33.6 us,  5.5 sy,  0.0 ni, 60.5 id,  0.4 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   948268 total,    10392 free,   720148 used,   217728 buff/cache
+KiB Swap:   499708 total,   479484 free,    20224 used.   207656 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND                                                                                                   
+ 2206 root      20   0  412612 351060  11088 S 151.3 37.0   2:23.28 java  
+ ```
+
 
 You will want to have a bootable microSD card running a fresh install of CentOS aarch64:
 http://isoredirect.centos.org/altarch/7/isos/armhfp/CentOS-Userland-7-armv7hl-RaspberryPI-GNOME-1908-sda.raw.xz
