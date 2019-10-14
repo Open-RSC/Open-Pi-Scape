@@ -16,7 +16,7 @@ First, SSH into your Pi and use the default credentials:
 ssh root@YOUR_PI's_IP_ADDRESS
 ```
 
-password: centos
+SSH user password: centos
 
 
 You will need to expand the filesystem to use the entire microSD card:
@@ -35,45 +35,52 @@ Paste the following:
 ```
 core_freq=500 # GPU Frequency
 arm_freq=1350 # CPU Frequency
-over_voltage=4 #Electric power sent to CPU / GPU (4 = 1.3V)
+over_voltage=4 # Electric power sent to CPU / GPU (4 = 1.3V)
 disable_splash=1 # Disables the display of the electric alert screen
 force_turbo=1
 sdram_freq=600
 boot_delay=1
-gpu_mem=320
+# gpu_mem=320 # Reserved memory for GPU
 ```
 
-Once installed, perform OS updates and install OpenJDK, MariaDB (SQL server), and various utilities via:
+
+Once installed, perform OS updates and install MariaDB (SQL server), and various utilities via:
 ```
-yum update -y && sudo yum install git wget htop mariadb adoptopenjdk-8-openj9 -y
+yum update -y && sudo yum install git wget mariadb mariadb-server ant -y
 ```
 
-Now, enable MariaDB to start up:
+Enable MariaDB to start up:
 ```
 systemctl enable --now mariadb
 ```
 
-
-If you wish, configure MariaDB:
-```
-mysql_secure_installation
-```
-
-
-Next, ensure your verison of java is installed properly:
+Verify Java is installed correctly:
 ```
 java -version
 ```
 
-
 It should look something like:
 ```
-openjdk version "13" 2019-09-17
-OpenJDK Runtime Environment AdoptOpenJDK (build 13+33)
-Eclipse OpenJ9 VM AdoptOpenJDK (build openj9-0.16.0, JRE 13 Linux amd64-64-Bit Compressed References 20190916_75 (JIT enabled, AOT enabled)
-OpenJ9 - 867dab457
-OMR - d4c85c31
-JCL - 2858e3f001 based on jdk-13+33)
+openjdk version "1.8.0_222"
+OpenJDK Runtime Environment (build 1.8.0_222-b10)
+OpenJDK Zero VM (build 25.222-b10, interpreted mode)
 ```
 
 Now download the zip release of this repo - or clone it with Git.
+```
+git clone https://gitlab.openrsc.com/open-rsc/Open-Pi-Scape.git && cd Open-Pi-Scape
+```
+
+
+Set the root user's password to "root" instead of the default and it being blank:
+```
+mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('root');"
+```
+
+Create the database(s) and import:
+```
+mysql -uroot -proot -e "create database openrsc;" && mysql openrsc < Required/openrsc_game_server.sql && mysql openrsc < Required/openrsc_game_players.sql
+
+mysql -uroot -proot -e "create database cabbage;" && mysql cabbage < Required/cabbage_game_server.sql && mysql cabbage < Required/cabbage_game_players.sql
+```
+
