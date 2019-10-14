@@ -46,7 +46,7 @@ boot_delay=1
 
 Once installed, perform OS updates and install MariaDB (SQL server), and various utilities via:
 ```
-yum update -y && sudo yum install git wget mariadb mariadb-server ant -y
+yum update -y && sudo yum install git wget mariadb mariadb-server ant screen -y
 ```
 
 Enable MariaDB to start up:
@@ -84,3 +84,29 @@ mysql -uroot -proot -e "create database openrsc;" && mysql openrsc < Required/op
 mysql -uroot -proot -e "create database cabbage;" && mysql cabbage < Required/cabbage_game_server.sql && mysql cabbage < Required/cabbage_game_players.sql
 ```
 
+Open the firewall ports:
+```
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --zone=public --add-port=443/tcp --permanent
+firewall-cmd --zone=public --add-port=43594/tcp --permanent
+firewall-cmd --zone=public --add-port=43595/tcp --permanent
+firewall-cmd --zone=public --add-port=43596/tcp --permanent
+firewall-cmd --zone=public --add-port=43597/tcp --permanent
+firewall-cmd --zone=public --add-port=43598/tcp --permanent
+firewall-cmd --zone=public --add-port=43599/tcp --permanent
+firewall-cmd --reload 
+```
+
+Start the game server:
+```
+screen
+
+ant -f Required/server/build.xml runserver
+```
+
+Press CTRL + A + D to leave the screen view and keep the server running in the background.
+
+To resume viewing, type:
+```
+screen -r
+```
