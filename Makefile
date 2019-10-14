@@ -1,73 +1,76 @@
 include .env
 MYSQL_DUMPS_DIR=./Backups
 
+run-server:
+	`pwd`/Required/run.sh
+
 compile:
 	sudo ant -f Required/server/build.xml compile_core
 	sudo ant -f Required/server/build.xml compile_plugins
 	sudo ant -f Required/client/build.xml compile
 
 create-database-openrsc:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database openrsc;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database openrsc;"
 
 create-database-cabbage:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database cabbage;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database cabbage;"
 
 create-database-preservation:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database preservation;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database preservation;"
 
 create-database-openpk:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database openpk;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database openpk;"
 
 create-database-wk:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database wk;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database wk;"
 
 create-database-dev:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database dev;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database dev;"
 
 create-database-website:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database website;"
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database website;"
 
 import-database-openrsc:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_server.sql
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_players.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_players.sql
 
 import-database-cabbage:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_server.sql
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_players.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_players.sql
 
 import-database-preservation:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_server.sql
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_players.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_players.sql
 
 import-database-openpk:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_server.sql
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_players.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_players.sql
 
 import-database-wk:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_server.sql
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_players.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_players.sql
 
 import-database-dev:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_server.sql
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_players.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_players.sql
 
 upgrade-database-openrsc:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_server.sql
 
 upgrade-database-cabbage:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_server.sql
 
 upgrade-database-preservation:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_server.sql
 
 upgrade-database-openpk:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_server.sql
 
 upgrade-database-wk:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_server.sql
 
 upgrade-database-dev:
-	docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_server.sql
+	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_server.sql
 
 backup-openrsc:
 	@mkdir -p $(MYSQL_DUMPS_DIR)

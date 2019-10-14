@@ -111,16 +111,27 @@ firewall-cmd --zone=public --add-port=43599/tcp --permanent
 firewall-cmd --reload 
 ```
 
-Start the game server:
+Start the game server in a background "screen" session:
 ```
-screen
+./run_server.sh
+```
 
-ant -f Required/server/build.xml runserver
+To view the "screen" background session, type:
+```
+screen -r
 ```
 
 Press CTRL + A + D to leave the screen view and keep the server running in the background.
 
-To resume viewing, type:
+
+Now that the game server is running, you will want to download the same project files on your PC and edit the following to set the server IP:
 ```
-screen -r
+Cache/ip.txt
+```
+
+Replace the contents of this file with the local network IP address of your Raspberry Pi. If you do not know it, type "ifconfig" on the Pi over SSH.
+
+Now start up the game client from your PC by launching "Open_RSC_Client.jar"
+```
+java -jar Open_RSC_Client.jar
 ```
