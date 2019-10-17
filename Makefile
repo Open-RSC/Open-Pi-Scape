@@ -1,115 +1,66 @@
 include .env
 MYSQL_DUMPS_DIR=./Backups
 
-run-server:
-	`pwd`/Required/run.sh
+start:
+	`pwd`/Start-Linux.sh
+
+run-game:
+	`pwd`/scripts/run.sh
+
+combined-install:
+	`pwd`/scripts/combined-install.sh
+
+docker-install:
+	`pwd`/scripts/docker-install.sh
+
+get-updates:
+	`pwd`/scripts/get-updates.sh
+
+start:
+	sudo docker-compose up -d
+
+stop:
+	sudo docker-compose down -v
+
+restart:
+	sudo docker-compose down -v
+	sudo docker-compose up -d
+
+ps:
+	docker-compose ps
+
+logs:
+	@docker-compose logs -f
 
 compile:
-	sudo ant -f Required/server/build.xml compile_core
-	sudo ant -f Required/server/build.xml compile_plugins
-	sudo ant -f Required/client/build.xml compile
+	sudo ant -f server/build.xml compile_core
+	sudo ant -f server/build.xml compile_plugins
+	sudo ant -f client/build.xml compile
+	sudo ant -f Launcher/build.xml compile
 
-create-database-openrsc:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database openrsc;"
+# Call via "make create db=cabbage"
+create:
+	sudo docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database ${db};"
 
-create-database-cabbage:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database cabbage;"
+# Call via "make import db=cabbage"
+import:
+	sudo docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} ${db} < Databases/${db}_game_server.sql
+	sudo docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} ${db} < Databases/${db}_game_players.sql
 
-create-database-preservation:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database preservation;"
+# Call via "make upgrade db=cabbage"
+upgrade:
+	sudo docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} ${db} < Databases/${db}_game_server.sql
 
-create-database-openpk:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database openpk;"
-
-create-database-wk:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database wk;"
-
-create-database-dev:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database dev;"
-
-create-database-website:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "create database website;"
-
-import-database-openrsc:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_server.sql
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_players.sql
-
-import-database-cabbage:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_server.sql
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_players.sql
-
-import-database-preservation:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_server.sql
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_players.sql
-
-import-database-openpk:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_server.sql
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_players.sql
-
-import-database-wk:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_server.sql
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_players.sql
-
-import-database-dev:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_server.sql
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_players.sql
-
-upgrade-database-openrsc:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc < Required/openrsc_game_server.sql
-
-upgrade-database-cabbage:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage < Required/cabbage_game_server.sql
-
-upgrade-database-preservation:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation < Required/openrsc_game_server.sql
-
-upgrade-database-openpk:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk < Required/openpk_game_server.sql
-
-upgrade-database-wk:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wk < Required/wk_game_server.sql
-
-upgrade-database-dev:
-	mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev < Required/openrsc_game_server.sql
-
-backup-openrsc:
+# Call via "make backup db=cabbage"
+backup:
 	@mkdir -p $(MYSQL_DUMPS_DIR)
 	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openrsc --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-openrsc.zip
+	sudo docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} ${db} --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-${db}.zip
 
-backup-cabbage:
-	@mkdir -p $(MYSQL_DUMPS_DIR)
-	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} cabbage --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-cabbage.zip
+# Call via clear-backups days=90
+clear-backups:
+	sudo find $(MYSQL_DUMPS_DIR)/*.zip -mtime +${days} -exec rm -f {} \;
 
-backup-preservation:
-	@mkdir -p $(MYSQL_DUMPS_DIR)
-	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} preservation --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-preservation.zip
-
-backup-openpk:
-	@mkdir -p $(MYSQL_DUMPS_DIR)
-	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} openpk --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-openpk.zip
-
-backup-wk:
-	@mkdir -p $(MYSQL_DUMPS_DIR)
-	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} wolfkingdom --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-wolfkingdom.zip
-
-backup-dev:
-	@mkdir -p $(MYSQL_DUMPS_DIR)
-	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} dev --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-dev.zip
-
-backup-website:
-	@mkdir -p $(MYSQL_DUMPS_DIR)
-	sudo chmod -R 777 $(MYSQL_DUMPS_DIR)
-	sudo chmod 644 etc/mariadb/innodb.cnf
-	docker exec mysql mysqldump -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} website --single-transaction --quick --lock-tables=false | sudo zip > $(MYSQL_DUMPS_DIR)/`date "+%Y%m%d-%H%M-%Z"`-website.zip
+# Call via "sudo make rank db=cabbage group=0 username=wolf"
+rank:
+	sudo docker exec -i mysql mysql -u${MARIADB_ROOT_USER} -p${MARIADB_ROOT_PASSWORD} -e "USE ${db}; UPDATE openrsc_players SET group_id = '${group}' WHERE openrsc_players.username = '${username}';"
